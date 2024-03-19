@@ -119,7 +119,7 @@
     <ClCompile Include="TOMB5\specific\LoadSave.cpp" />
     <ClCompile Include="TOMB5\specific\output.cpp" />
     <ClCompile Include="TOMB5\specific\polyinsert.cpp" />
-    <ClCompile Include="TOMB5\specific\registry.cpp" />
+    <ClCompile Include="TOMB5\specific\inifile.cpp" />
     <ClCompile Include="TOMB5\specific\setupdlg.cpp" />
     <ClCompile Include="TOMB5\specific\specificfx.cpp" />
     <ClCompile Include="TOMB5\specific\texture.cpp" />
@@ -263,7 +263,7 @@
     <ClInclude Include="TOMB5\specific\d3dmatrix.h" />
     <ClInclude Include="TOMB5\specific\output.h" />
     <ClInclude Include="TOMB5\specific\polyinsert.h" />
-    <ClInclude Include="TOMB5\specific\registry.h" />
+    <ClInclude Include="TOMB5\specific\inifile.h" />
     <ClInclude Include="TOMB5\specific\setupdlg.h" />
     <ClInclude Include="TOMB5\specific\specificfx.h" />
     <ClInclude Include="TOMB5\specific\texture.h" />
@@ -299,26 +299,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>

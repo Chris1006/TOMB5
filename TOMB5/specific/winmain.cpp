@@ -9,7 +9,7 @@
 #include "d3dmatrix.h"
 #include "3dmath.h"
 #include "audio.h"
-#include "registry.h"
+#include "inifile.h"
 #include "../game/gameflow.h"
 #include "texture.h"
 #include "dxsound.h"

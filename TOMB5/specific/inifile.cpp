@@ -1,84 +1,102 @@
 #include "../tomb5/pch.h"
-#include "registry.h"
+#include "inifile.h"
 #include "LoadSave.h"
 #include "winmain.h"
 #include "input.h"
 #include "setupdlg.h"
 
 static HKEY phkResult;
-static DWORD dwDisposition;
 static bool REG_Setup;
+static LPCSTR lpSubKey = (char*)"";
+static LPCSTR INIFILE = (char*)"tomb5.ini";
 
-bool REG_OpenKey(LPCSTR lpSubKey)
-{
-	return RegCreateKeyEx(HKEY_CURRENT_USER, lpSubKey, 0, (CHAR*)"", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, 0, &phkResult, &dwDisposition) == ERROR_SUCCESS;
-}
 
 bool OpenRegistry(LPCSTR SubKeyName)
 {
-	char buffer[256];
-
-	if (!SubKeyName)
-		return REG_OpenKey("Software\\Core Design\\Tomb Raider Chronicles");
-
-	sprintf(buffer, "%s\\%s", "Software\\Core Design\\Tomb Raider Chronicles", SubKeyName);
-	return REG_OpenKey(buffer);
+	if (!SubKeyName) {
+		INIFILE = (char*)"";
+		return 1;
+	}
+	INIFILE = lpSubKey;
+	return 1;
 }
 
-void REG_CloseKey()
+LPCSTR toString(ulong l)
 {
-	RegCloseKey(phkResult);
+	char buffer[64];
+	snprintf(buffer, sizeof(buffer), "%lu", l);
+	return buffer;
 }
 
-void CloseRegistry()
+LPCSTR toString(bool b)
 {
-	REG_CloseKey();
+	char buffer[64];
+	snprintf(buffer, sizeof(buffer), "%d", b);
+	return buffer;
 }
 
-bool REG_KeyWasCreated()
+LPCSTR toString(float f)
 {
-	return dwDisposition == REG_CREATED_NEW_KEY;
+	char buffer[64];
+	snprintf(buffer, sizeof(buffer), "%.5f", f);
+	return (char*)"";
 }
+
+ulong strToUl(LPCSTR str) {
+	return atol(str);
+}
+
+bool strToB(LPCSTR str) {
+
+	return atoi(str);
+}
+
+float strToF(LPCSTR str) {
+	return atof(str);
+}
+
 
 void REG_WriteLong(char* SubKeyName, ulong value)
 {
-	RegSetValueEx(phkResult, SubKeyName, 0, REG_DWORD, (CONST BYTE*) & value, sizeof(ulong));
+	WritePrivateProfileString(lpSubKey, SubKeyName, toString(value), INIFILE);
 }
+
 
 void REG_WriteBool(char* SubKeyName, bool value)
 {
 	ulong Lvalue;
 
+
 	Lvalue = (ulong)value;
-	RegSetValueEx(phkResult, SubKeyName, 0, REG_DWORD, (CONST BYTE*) & Lvalue, sizeof(ulong));
+	WritePrivateProfileString(lpSubKey, SubKeyName, toString(Lvalue), INIFILE);
 }
 
 bool REG_ReadLong(char* SubKeyName, ulong& value, ulong defaultValue)
 {
-	ulong type;
-	ulong cbData;
+	char buffer[64];
+	DWORD Read = GetPrivateProfileString(lpSubKey, SubKeyName, toString(defaultValue), buffer, sizeof(buffer), INIFILE);
 
-	cbData = 4;
 
-	if (RegQueryValueEx(phkResult, SubKeyName, 0, &type, (LPBYTE)&value, &cbData) == ERROR_SUCCESS && type == REG_DWORD && cbData == 4)
+	if (Read > 0) {
+
+		value = strToUl(buffer);
 		return 1;
+	}
 
-	REG_WriteLong(SubKeyName, defaultValue);	//value not found, write default
+	REG_WriteLong(SubKeyName, defaultValue);
 	value = defaultValue;
 	return 0;
 }
 
 bool REG_ReadBool(char* SubKeyName, bool& value, bool defaultValue)
 {
-	ulong type;
-	ulong cbData;
-	ulong data;
+	char buffer[64];
+	DWORD Read = GetPrivateProfileString(lpSubKey, SubKeyName, toString(defaultValue), buffer, sizeof(buffer), INIFILE);
 
-	cbData = 4;
 
-	if (RegQueryValueEx(phkResult, SubKeyName, 0, &type, (LPBYTE)&data, &cbData) == ERROR_SUCCESS && type == REG_DWORD && cbData == 4)
-	{
-		value = (bool)data;
+	if (Read > 0) {
+
+		value = strToB(buffer);
 		return 1;
 	}
 
@@ -129,7 +147,6 @@ bool LoadSettings()
 			App.StartFlags |= DXF_FULLSCREEN;
 	}
 
-	CloseRegistry();
 
 	OpenRegistry("Game");
 
@@ -206,7 +223,6 @@ bool LoadSettings()
 	REG_ReadLong((char*)"WindowX", (ulong&)App.dx.rScreen.left, 0);
 	REG_ReadLong((char*)"WindowY", (ulong&)App.dx.rScreen.top, 0);
 
-	CloseRegistry();
 	CheckKeyConflicts();
 	return REG_Setup;
 }
@@ -251,12 +267,11 @@ void SaveSettings()
 	REG_WriteLong((char*)"AutoTarget", App.AutoTarget);
 	REG_WriteLong((char*)"WindowX", App.dx.rScreen.left);
 	REG_WriteLong((char*)"WindowY", App.dx.rScreen.top);
-	CloseRegistry();
 
 	OpenRegistry("System");
 	REG_WriteLong((char*)"VMode", App.DXInfo.nDisplayMode);
 	REG_WriteBool((char*)"Window", (App.dx.Flags & DXF_WINDOWED) != 0);
-	CloseRegistry();
+
 }
 
 bool SaveSetup(HWND hDlg)
@@ -276,7 +291,6 @@ bool SaveSetup(HWND hDlg)
 	REG_WriteBool((char*)"NoFMV", SendMessage(GetDlgItem(hDlg, IDC_DISABLE_FMV), BM_GETCHECK, 0, 0));
 	REG_WriteBool((char*)"Setup", 1);
 
-	CloseRegistry();
-	CloseRegistry();
+
 	return 1;
 }

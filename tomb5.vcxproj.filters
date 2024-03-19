@@ -324,7 +324,7 @@
     <ClCompile Include="TOMB5\tomb5\tomb5.cpp">
       <Filter>TOMB5\tomb5</Filter>
     </ClCompile>
-    <ClCompile Include="TOMB5\specific\registry.cpp">
+    <ClCompile Include="TOMB5\specific\inifile.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
     <ClCompile Include="TOMB5\specific\winmain.cpp">
@@ -658,7 +658,7 @@
     <ClInclude Include="TOMB5\tomb5\tomb5.h">
       <Filter>TOMB5\tomb5</Filter>
     </ClInclude>
-    <ClInclude Include="TOMB5\specific\registry.h">
+    <ClInclude Include="TOMB5\specific\inifile.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />

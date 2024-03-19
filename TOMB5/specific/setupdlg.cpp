@@ -1,7 +1,7 @@
 #include "../tomb5/pch.h"
 #include "setupdlg.h"
 #include "../../resource.h"
-#include "registry.h"
+#include "inifile.h"
 #include "winmain.h"
 #include "../game/gameflow.h"
 
