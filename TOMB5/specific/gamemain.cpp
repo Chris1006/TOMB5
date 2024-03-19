@@ -114,7 +114,7 @@ long S_SaveGame(long slot_num)
 		CreateDirectory("saves", 0);
 	}
 
-	wsprintf(buffer, "save\\savegame.%d", slot_num);
+	wsprintf(buffer, "saves\\savegame.%d", slot_num);
 	file = CreateFile(buffer, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 
 	if (file != INVALID_HANDLE_VALUE)
