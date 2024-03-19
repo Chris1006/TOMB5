@@ -38,6 +38,12 @@ static BINK_STRUCT* Bink;
 static LPDIRECTDRAWSURFACE4 BinkSurface;
 static long BinkSurfaceType;
 
+#define GET_DLL_PROC(dll, proc, n) \
+{ \
+	*(FARPROC *)&(proc) = GetProcAddress((dll), n); \
+	if(!proc) throw #proc; \
+}
+
 bool LoadBinkStuff()
 {
 	hBinkW32 = LoadLibrary("binkw32.dll");
@@ -100,7 +106,6 @@ long PlayFmv(long num)
 
 	if (MainThread.ended)
 		return 0;
-
 	/*
 	if ((1 << num) & FmvSceneTriggered)
 		return 1;
@@ -115,20 +120,19 @@ long PlayFmv(long num)
 	sprintf(name, "movie\\fmv%01d.bik", num);
 	memset(path, 0, sizeof(path));
 	strcat(path, name);
-	Log("PlayFMV %s", path);
 	App.fmv = 1;
 	modes = G_dxinfo->DDInfo[App.DXInfo.nDD].D3DDevices[App.DXInfo.nD3D].DisplayModes;
 	rm = 0;
 	dm = App.DXInfo.nDisplayMode;
 	current = &modes[dm];
 
-	if (current->bpp != 16 || current->w != 640 || current->h != 480)
+	if (current->bpp != 32 || current->w != 640 || current->h != 480)
 	{
 		ndms = G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].nDisplayModes;
 
 		for (int i = 0; i < ndms; i++, modes++)
 		{
-			if (modes->bpp == 16 && modes->w == 640 && modes->h == 480)
+			if (modes->bpp == 32 && modes->w == 640 && modes->h == 480)
 			{
 				App.DXInfo.nDisplayMode = i;
 				break;
@@ -154,13 +158,12 @@ long PlayFmv(long num)
 
 	if (Bink)
 	{
-		Log("Entering Bink Loop");
 		BinkDoFrame(Bink);
 		S_UpdateInput();
 
-		for (int i = 0; i != nFmvFrames[num]; i++)
+		for (int i = 0; i != Bink->num2; i++)
 		{
-			if (input & IN_OPTION || input & IN_DRAW || MainThread.ended)
+			if (input & IN_OPTION || MainThread.ended)
 				break;
 
 			BinkNextFrame(Bink);
@@ -176,8 +179,6 @@ long PlayFmv(long num)
 		BinkClose(Bink);
 		Bink = 0;
 	}
-	else
-		Log("FAILED TO CREATE BINK OBJECT");
 
 	if (rm)
 	{
@@ -195,6 +196,8 @@ long PlayFmv(long num)
 	App.fmv = 0;
 	return 0;
 }
+
+
 
 long PlayFmvNow(long num, long u)
 {
