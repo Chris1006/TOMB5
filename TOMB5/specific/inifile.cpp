@@ -8,16 +8,12 @@
 static HKEY phkResult;
 static bool REG_Setup;
 static LPCSTR lpSubKey = (char*)"";
-static LPCSTR INIFILE = (char*)"tomb5.ini";
+static LPCSTR INIFILE = (char*)".\\tomb5.ini";
 
 
 bool OpenRegistry(LPCSTR SubKeyName)
 {
-	if (!SubKeyName) {
-		INIFILE = (char*)"";
-		return 1;
-	}
-	INIFILE = lpSubKey;
+	lpSubKey = SubKeyName;
 	return 1;
 }
 
